@@ -1,7 +1,7 @@
 import logo from "./logo.svg";
 import "./App.css";
 import axios from "axios";
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 //bai 1:Viết một hàm nhập vào 2 mảng A1 và A2, đầu ra trả về một mảng mới chứa các phần tử không trùng nhau của hai mảng kia. Ví dụ A1 = [1, 2, "a"]; A2 = [1, 3, "b"] thì output ra được là [2, "a", "b", 3].
 
@@ -10,10 +10,14 @@ let A2 = [1, 3, "b"];
 
 const input = (A1, A2) => {
   const B = [...A1, ...A2];
+  console.log(B);
 
-  const output = B.filter(
-    (value, index, array) => array.indexOf(value) === index
-  );
+  var counts = {};
+  for (var i = 0, l = B.length; i < l; i++) {
+    counts[B[i]] = (counts[B[i]] || 0) + 1;
+  }
+
+  const output = B.filter((item) => counts[item] <= 1);
   console.log(output);
 };
 console.log(input(A1, A2));
@@ -38,14 +42,94 @@ function GoalList() {
 }
 
 //bai3:
-function quiz(){
-  const [quiz, setQuiz] = useState("");
-  const [answer, setAnswer] = useState([]);
-  const [choice, setChoice] = useState("");
-const getQuiz = async () => {
-  try {
-    const response = await axios.get(
-      "https://opentdb.com/api.php?amount=5&category=21&difficulty=easy&type=multiple"
-    );
+function Quiz() {
+  const [getQuiz, setGetQuiz] = useState(0);
+  const [score, setScore] = useState(0);
+  const [showScore, setShowScore] = useState(false);
+  const Quiz = [
+    {
+      category: "Sports",
+      type: "multiple",
+      difficulty: "easy",
+      question: "In golf, what name is given to a hole score of two under par?",
+      correct_answer: "Eagle",
+      incorrect_answers: ["Birdie", "Bogey", "Albatross"],
+    },
+    {
+      category: "Sports",
+      type: "multiple",
+      difficulty: "easy",
+      question: "Which team won the 2015-16 English Premier League?",
+      correct_answer: "Leicester City",
+      incorrect_answers: ["Liverpool", "Cheslea", "Manchester United"],
+    },
+    {
+      category: "Sports",
+      type: "multiple",
+      difficulty: "easy",
+      question:
+        "This Canadian television sportscaster is known for his &quot;Hockey Night in Canada&quot; role, a commentary show during hockey games.",
+      correct_answer: "Don Cherry",
+      incorrect_answers: ["Don McKellar", "Don Taylor ", "Donald Sutherland"],
+    },
+    {
+      category: "Sports",
+      type: "multiple",
+      difficulty: "easy",
+      question: "Which team has won the most Stanley Cups in the NHL?",
+      correct_answer: "Montreal Canadians",
+      incorrect_answers: [
+        "Chicago Blackhawks",
+        "Toronto Maple Leafs",
+        "Detroit Red Wings",
+      ],
+    },
+    {
+      category: "Sports",
+      type: "multiple",
+      difficulty: "easy",
+      question:
+        "In bowling, what is the term used for getting three consecutive strikes?",
+      correct_answer: "Turkey",
+      incorrect_answers: ["Flamingo", "Birdie", "Eagle"],
+    },
+  ];
+  const handleAnswerOptionClick = (correct_answer) => {
+    if (correct_answer) {
+      setScore(score + 10);
+    }
+  };
+
+  const nextQuestion = getQuiz + 1;
+  if (nextQuestion < getQuiz.question.length) {
+    setGetQuiz(nextQuestion);
+  } else {
+    setShowScore(true);
   }
-}}
+  return (
+    <div className="app">
+      {showScore ? (
+        <div className="score-section">You scored {score}</div>
+      ) : (
+        <>
+          <div className="question-section">
+            <div className="question-count">
+              <span>Question {getQuiz + 1}</span>/{Quiz.length}
+            </div>
+            <div className="question-text">{Quiz[getQuiz].question}</div>
+          </div>
+          <div className="answer-section">
+            {Quiz[getQuiz].map((Quiz) => (
+              <button
+                onClick={() => handleAnswerOptionClick(Quiz.correct_answer)}
+              >
+                {Quiz.incorrect_answers}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+export default Quiz;
