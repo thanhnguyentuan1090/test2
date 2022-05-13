@@ -24,22 +24,46 @@ console.log(input(A1, A2));
 
 //bai 2:Viết chương trình xếp hạng rank theo số điểm các đội bóng đạt được trong giải đấu. Biết rằng tên của các đội bóng không thể trùng nhau, nếu số điểm trùng nhau thì xếp đội xếp trên có hiệu số bàn thắng bại (GD: Goal Difference) ít hơn, rồi mới xét đến Alphabet nếu 2 đội trùng cả điểm số lẫn hiệu số bàn thắng.
 
-function GoalList() {
-  const input2 = [
-    { name: "Arsenal", points: 99, GD: 45 },
-    { name: "Chelsea", points: 75, GD: 39 },
-    { name: "Manchester United", points: 60, GD: 29 },
-    { name: "Liverpool", points: 88, GD: 39 },
-  ];
-  var output2 = input2.sort((a, b) => {
-    return b.points - a.points;
+const teams = [
+  { name: "Arsenal", points: 99, GD: 45 },
+  { name: "Chelsea", points: 75, GD: 39 },
+  { name: "Manchester United", points: 60, GD: 29 },
+  { name: "Liverpool", points: 88, GD: 39 },
+];
+
+const ranking = (arr) => {
+  const output = [...arr];
+  output.forEach((team, index, array) => {
+    !team.position && (team.position = 1);
+
+    for (let index2 = index + 1; index2 < array.length; index2++) {
+      !array[index2].position && (array[index2].position = 1);
+      if (array[index2].points !== team.points) {
+        array[index2].points > team.points
+          ? (team.position += 1)
+          : (array[index2].position += 1);
+      } else if (
+        array[index2].points === team.points &&
+        array[index2].GD !== team.GD
+      ) {
+        array[index2].GD < team.GD
+          ? (team.position += 1)
+          : (array[index2].position += 1);
+      } else if (
+        array[index2].points === team.points &&
+        array[index2].GD === team.GD &&
+        array[index2].name !== team.name
+      ) {
+        array[index2].name > team.name
+          ? (team.position += 1)
+          : (array[index2].position += 1);
+      }
+    }
   });
-  var output3 = output2.map(function (point, index) {
-    point.position = index + 1;
-    return point;
-  });
-  console.log(output3);
-}
+  return output;
+};
+
+console.log(ranking(teams));
 
 //bai3:
 function Quiz() {
